@@ -1,0 +1,35 @@
+SELECT DISTINCT Date,Station,COUNT(`Covid_Count`) over (partition by `Date`) Count_covid,
+COUNT(`Corona_Count`) over (partition by `Date`) Count_corona ,
+COUNT(`Delta_Count`) over (partition by `Date`) Count_delta ,
+COUNT(`Omicron_Count`) over (partition by `Date`) Count_omicron,
+COUNT(`Covid_test_Count`) over (partition by `Date`) Count_CovidTest ,
+COUNT(`Death_Count`) over (partition by `Date`) Count_death ,
+COUNT(`FaceMask_Count`) over (partition by `Date`) Count_facemask ,
+COUNT(`Lockdown_Count`) over (partition by `Date`) Count_lockdown ,
+COUNT(`Quarantine_Count`) over (partition by `Date`) Count_quarantine ,
+COUNT(`Vaccine_Count`) over (partition by `Date`) Count_vaccine ,
+COUNT(`Relaxation_Count`) over (partition by `Date`) Count_relaxation ,
+COUNT(`Recovery_Count`) over (partition by `Date`) Count_recovery ,
+COUNT(`SocialDistance_Count`) over (partition by `Date`) Count_socialDistance ,
+Covid_Count, Delta_Count, Omicron_Count, Corona_Count, Covid_test_Count, Death_Count, FaceMask_Count, Lockdown_Count, Quarantine_Count, Vaccine_Count,
+Relaxation_Count, Recovery_Count, SocialDistance_Count
+FROM
+(SELECT 
+`tvnews`.`Station` AS `Station`,
+  `tvnews`.`Snippet` AS `Snippet`,
+  DATE(`tvnews`.`MatchDateTimeStamp`) AS `Date`,
+    CASE WHEN LOWER(`Snippet`) like '%covid%' THEN 'Covid' END `Covid_Count`,
+    CASE WHEN LOWER(`Snippet`) like '%corona%' THEN 'Corona' END `Corona_Count`,
+    CASE WHEN LOWER(`Snippet`) like '%delta%' THEN 'Delta' END `Delta_Count`,
+    CASE WHEN LOWER(`Snippet`) like '%omicron%' THEN 'Omicron' END `Omicron_Count`,
+    CASE WHEN LOWER(`Snippet`) like '%covid test%' THEN 'Covid test' END `Covid_test_Count`,
+    CASE WHEN LOWER(`Snippet`) like '%death%' THEN 'Death' END `Death_Count`,
+    CASE WHEN LOWER(`Snippet`) like '%face mask%' THEN 'Face Mask' END `FaceMask_Count`,
+    CASE WHEN LOWER(`Snippet`) like '%lockdown%' THEN 'Lockdown' END `Lockdown_Count`,
+    CASE WHEN LOWER(`Snippet`) like '%quarantin%' THEN 'Quarantine' END `Quarantine_Count`,
+    CASE WHEN LOWER(`Snippet`) like '%vaccin%' THEN 'Vaccine' END `Vaccine_Count`,
+    CASE WHEN LOWER(`Snippet`) like '%relaxation%' THEN 'Relaxation' END `Relaxation_Count`,
+    CASE WHEN LOWER(`Snippet`) like '%recover%' THEN 'Recovery' END `Recovery_Count`,
+    CASE WHEN LOWER(`Snippet`) like '%social distanc%' THEN 'SocialDistance' END `SocialDistance_Count`
+FROM `gdelt-bq.covid19`.`tvnews` `tvnews` 
+WHERE DATE(`tvnews`.`MatchDateTimeStamp`) between "2019-12-01" and "2022-02-01")s ORDER BY 1
